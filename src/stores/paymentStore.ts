@@ -1,14 +1,14 @@
 import { create } from 'zustand';
-import { PaymentSettings } from '../types';
+import { Payment } from '../types';
 import { paymentService } from '../services/paymentService';
 
 interface PaymentStore {
-  settings: PaymentSettings | null;
+  settings: Payment | null;
   loading: boolean;
   error: string | null;
   
   fetchPaymentSettings: () => Promise<void>;
-  updatePaymentSettings: (updates: Partial<PaymentSettings>) => Promise<void>;
+  updatePaymentSettings: (updates: Partial<Payment>) => Promise<void>;
   clearError: () => void;
 }
 
@@ -31,7 +31,7 @@ export const usePaymentStore = create<PaymentStore>((set) => ({
     }
   },
 
-  updatePaymentSettings: async (updates: Partial<PaymentSettings>) => {
+  updatePaymentSettings: async (updates: Partial<Payment>) => {
     set({ loading: true, error: null });
     
     try {

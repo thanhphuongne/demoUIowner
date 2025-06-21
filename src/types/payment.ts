@@ -1,4 +1,4 @@
-export interface PaymentSettings {
+export interface Payment {
     acceptedMethods: string[];
     commission: number;
     refundPolicy: string;

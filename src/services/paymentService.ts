@@ -1,15 +1,15 @@
-import { PaymentSettings } from '../types';
+import { Payment } from '../types';
 import { mockPaymentSettings } from '../data/mockPaymentSettings';
 
 class PaymentService {
-  private settings: PaymentSettings = mockPaymentSettings;
+  private settings: Payment = mockPaymentSettings;
 
-  async getPaymentSettings(): Promise<PaymentSettings> {
+  async getPaymentSettings(): Promise<Payment> {
     await new Promise(resolve => setTimeout(resolve, 200));
     return this.settings;
   }
 
-  async updatePaymentSettings(updates: Partial<PaymentSettings>): Promise<PaymentSettings> {
+  async updatePaymentSettings(updates: Partial<Payment>): Promise<Payment> {
     await new Promise(resolve => setTimeout(resolve, 500));
     this.settings = { ...this.settings, ...updates };
     return this.settings;

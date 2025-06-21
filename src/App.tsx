@@ -8,6 +8,8 @@ import AuthGuard from './guards/AuthGuard';
 import RoleGuard from './guards/RoleGuard';
 import ErrorPage from './pages/ErrorPage';
 import BookingManageScreen from './pages/BookingManageScreen';
+import AnalyticsPage from './pages/AnalyticsPage';
+import SettingsPage from './pages/SettingsPage';
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/fields" element={<ManageFieldPage />} />
           <Route path="/bookings" element={<BookingManageScreen />} />
+          <Route path="/analytics" element={<AnalyticsPage />} /> 
+          <Route path="/settings" element={<SettingsPage />} />
         </Route>
         
         <Route path="/" element={<Navigate to="/login" replace />} />
