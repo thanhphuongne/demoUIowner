@@ -1,4 +1,13 @@
 {
+  "compilerOptions": {
+    // ...các cấu hình hiện có khác
+    
+    // Thêm các dòng này
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },

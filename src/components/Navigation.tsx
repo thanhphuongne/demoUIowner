@@ -23,11 +23,11 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, user, o
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'fields', label: 'Quản Lý Sân', icon: MapPin },
-    { id: 'bookings', label: 'Đặt Sân', icon: Calendar },
-    { id: 'analytics', label: 'Thống Kê', icon: BarChart3 },
-    { id: 'settings', label: 'Cài Đặt', icon: Settings },
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
+    { id: 'fields', label: 'Quản Lý Sân', icon: MapPin, path: '/fields' },
+    { id: 'bookings', label: 'Đặt Sân', icon: Calendar, path: '/bookings' },
+    { id: 'analytics', label: 'Thống Kê', icon: BarChart3, path: '/analytics' },
+    { id: 'settings', label: 'Cài Đặt', icon: Settings, path: '/settings' },
   ];
 
   const handleNavClick = (tabId: string) => {
