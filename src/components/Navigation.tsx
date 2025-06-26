@@ -1,33 +1,47 @@
+'use client';
+
 import React, { useState } from 'react';
-import { 
-  LayoutDashboard, 
-  MapPin, 
-  Calendar, 
-  BarChart3, 
-  Settings, 
+import Image from 'next/image';
+import {
+  LayoutDashboard,
+  MapPin,
+  Calendar,
+  BarChart3,
+  Settings,
   LogOut,
   User,
   Bell,
   Menu,
-  X
+  X,
 } from 'lucide-react';
+
+interface UserInfo {
+  name: string;
+  businessName: string;
+  avatar?: string;
+}
 
 interface NavigationProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
-  user: any;
+  user: UserInfo;
   onLogout: () => void;
 }
 
-const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, user, onLogout }) => {
+const Navigation: React.FC<NavigationProps> = ({
+  activeTab,
+  onTabChange,
+  user,
+  onLogout,
+}) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'fields', label: 'Quản Lý Sân', icon: MapPin },
-    { id: 'bookings', label: 'Đặt Sân', icon: Calendar },
-    { id: 'analytics', label: 'Thống Kê', icon: BarChart3 },
-    { id: 'settings', label: 'Cài Đặt', icon: Settings },
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
+    { id: 'fields', label: 'Quản Lý Sân', icon: MapPin, path: '/fields' },
+    { id: 'bookings', label: 'Đặt Sân', icon: Calendar, path: '/bookings' },
+    { id: 'analytics', label: 'Thống Kê', icon: BarChart3, path: '/analytics' },
+    { id: 'settings', label: 'Cài Đặt', icon: Settings, path: '/settings' },
   ];
 
   const handleNavClick = (tabId: string) => {
@@ -61,15 +75,20 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, user, o
 
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-40 bg-black bg-opacity-50" onClick={() => setIsMobileMenuOpen(false)} />
+        <div
+          className="lg:hidden fixed inset-0 z-40 bg-black bg-opacity-50"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
       )}
 
-      {/* Desktop Sidebar & Mobile Slide-out Menu */}
-      <div className={`
-        fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:transform-none flex flex-col
-        ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-      `}>
-        {/* Logo & Brand - Hidden on mobile since it's in the header */}
+      {/* Sidebar */}
+      <div
+        className={`
+          fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:transform-none flex flex-col
+          ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        `}
+      >
+        {/* Desktop Logo */}
         <div className="hidden lg:block p-6 border-b border-gray-200">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
@@ -85,9 +104,15 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, user, o
         {/* User Profile */}
         <div className="p-4 border-b border-gray-200 mt-4 lg:mt-0">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
+            <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex-shrink-0 relative">
               {user.avatar ? (
-                <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                <Image
+                  src={user.avatar}
+                  alt={user.name}
+                  fill
+                  className="object-cover"
+                  sizes="40px"
+                />
               ) : (
                 <div className="w-full h-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
                   <User className="w-5 h-5 text-white" />
@@ -108,7 +133,7 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, onTabChange, user, o
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
-              
+
               return (
                 <li key={item.id}>
                   <button
