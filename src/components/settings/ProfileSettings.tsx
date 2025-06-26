@@ -1,4 +1,7 @@
-import React, { useState, ChangeEvent } from 'react';
+'use client';
+
+import React, { useState, ChangeEvent, useEffect } from 'react';
+import Image from 'next/image';
 import { User, Mail, Phone, Building, Save } from 'lucide-react';
 import { UserProfile } from '../../types';
 
@@ -22,15 +25,15 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({
   const [profileData, setProfileData] = useState<Partial<UserProfile>>(user);
   const [avatarPreview, setAvatarPreview] = useState<string | undefined>(user.avatar);
 
-  // Cập nhật profileData khi user thay đổi
-  React.useEffect(() => {
+  // Update khi user thay đổi
+  useEffect(() => {
     setProfileData(user);
     setAvatarPreview(user.avatar);
   }, [user]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setProfileData(prev => ({ ...prev, [name]: value }));
+    setProfileData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSaveProfile = async () => {
@@ -40,13 +43,10 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({
   const handleAvatarChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Tạo URL xem trước
       const previewUrl = URL.createObjectURL(file);
       setAvatarPreview(previewUrl);
-      
-      // Gọi hàm uploadAvatar
+
       onUploadAvatar(file).catch(() => {
-        // Nếu có lỗi, reset preview
         setAvatarPreview(user.avatar);
       });
     }
@@ -60,11 +60,11 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({
       </div>
 
       {error && (
-        <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-lg">
+        <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-lg relative">
           {error}
           <button 
             onClick={clearError} 
-            className="float-right text-red-800 font-medium"
+            className="absolute top-2 right-2 text-red-800 font-medium"
           >
             Đóng
           </button>
@@ -74,9 +74,15 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({
       <div className="space-y-6">
         {/* Avatar */}
         <div className="flex items-center space-x-6">
-          <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-200">
+          <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-200 relative">
             {avatarPreview ? (
-              <img src={avatarPreview} alt={user.name} className="w-full h-full object-cover" />
+              <Image
+                src={avatarPreview}
+                alt={user.name}
+                width={80}
+                height={80}
+                className="object-cover w-full h-full"
+              />
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
                 <User className="w-8 h-8 text-white" />
@@ -99,69 +105,36 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({
 
         {/* Form */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Họ và tên
-            </label>
-            <div className="relative">
-              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input
-                type="text"
-                name="name"
-                value={profileData.name || ''}
-                onChange={handleChange}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Email
-            </label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input
-                type="email"
-                name="email"
-                value={profileData.email || ''}
-                onChange={handleChange}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Số điện thoại
-            </label>
-            <div className="relative">
-              <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input
-                type="tel"
-                name="phone"
-                value={profileData.phone || ''}
-                onChange={handleChange}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Tên doanh nghiệp
-            </label>
-            <div className="relative">
-              <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input
-                type="text"
-                name="businessName"
-                value={profileData.businessName || ''}
-                onChange={handleChange}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-          </div>
+          <InputField
+            icon={User}
+            label="Họ và tên"
+            name="name"
+            value={profileData.name || ''}
+            onChange={handleChange}
+          />
+          <InputField
+            icon={Mail}
+            label="Email"
+            name="email"
+            type="email"
+            value={profileData.email || ''}
+            onChange={handleChange}
+          />
+          <InputField
+            icon={Phone}
+            label="Số điện thoại"
+            name="phone"
+            type="tel"
+            value={profileData.phone || ''}
+            onChange={handleChange}
+          />
+          <InputField
+            icon={Building}
+            label="Tên doanh nghiệp"
+            name="businessName"
+            value={profileData.businessName || ''}
+            onChange={handleChange}
+          />
         </div>
 
         <div className="flex justify-end">
@@ -178,5 +151,31 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({
     </div>
   );
 };
+
+// Tách component input để tái sử dụng
+interface InputFieldProps {
+  icon: React.ElementType;
+  label: string;
+  name: string;
+  value: string;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  type?: string;
+}
+
+const InputField: React.FC<InputFieldProps> = ({ icon: Icon, label, name, value, onChange, type = 'text' }) => (
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
+    <div className="relative">
+      <Icon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+      <input
+        type={type}
+        name={name}
+        value={value}
+        onChange={onChange}
+        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+      />
+    </div>
+  </div>
+);
 
 export default ProfileSettings;

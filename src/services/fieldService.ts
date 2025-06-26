@@ -3,6 +3,13 @@ import { mockFields } from '../data/mockFields';
 
 class FieldService {
   private fields: Field[] = mockFields;
+  private idCounter: number = Date.now();
+
+  // Tạo unique ID
+  private generateId(): string {
+    this.idCounter += 1;
+    return `field_${this.idCounter}_${Math.random().toString(36).substr(2, 9)}`;
+  }
 
   async getFields(): Promise<Field[]> {
     await new Promise(resolve => setTimeout(resolve, 300));
@@ -19,7 +26,7 @@ class FieldService {
     
     const newField: Field = {
       ...fieldData,
-      id: Date.now().toString(),
+      id: this.generateId(),
       rating: 0,
       totalBookings: 0
     };

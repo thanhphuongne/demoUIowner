@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { UserProfile } from '../types';
 import { mockUserProfiles } from '../data/mockUserProfiles';
 
@@ -23,7 +24,6 @@ class UserService {
 
   async uploadAvatar(userId: string, file: File): Promise<string> {
     await new Promise(resolve => setTimeout(resolve, 1000));
-    // In real app, would upload to cloud storage
     const avatarUrl = `https://example.com/avatars/${userId}_${Date.now()}.jpg`;
     
     const profileIndex = this.profiles.findIndex(p => p.id === userId);

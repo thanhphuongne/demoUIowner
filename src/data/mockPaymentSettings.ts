@@ -1,6 +1,6 @@
-import { PaymentSettings } from '../types';
+import { Payment } from '../types';
 
-export const mockPaymentSettings: PaymentSettings = {
+export const mockPaymentSettings: Payment = {
   acceptedMethods: ['Cash', 'Bank Transfer', 'E-Wallet', 'Credit Card'],
   commission: 5,
   refundPolicy: 'Hoàn tiền 100% nếu hủy trước 24 giờ',

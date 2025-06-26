@@ -11,7 +11,7 @@ import {
   TrendingUp as TrendingUpIcon,
 } from "lucide-react";
 import { Analytics, Activity, Field } from "../types";
-
+import { UserProfile } from "../types";
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat("vi-VN", {
     style: "currency",
@@ -27,7 +27,7 @@ interface DashboardProps {
   analytics: Analytics;
   activities: Activity[];
   fields: Field[];
-  user: any;
+  user: UserProfile;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({

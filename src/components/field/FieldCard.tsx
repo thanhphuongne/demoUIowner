@@ -1,13 +1,16 @@
+'use client';
+
 import React from 'react';
+import Image from 'next/image';
 import { Field } from '../../types';
-import { 
-  Edit, 
-  Eye, 
-  MapPin, 
-  Clock, 
+import {
+  Edit,
+  Eye,
+  MapPin,
+  Clock,
   DollarSign,
   Users,
-  Star
+  Star,
 } from 'lucide-react';
 
 interface FieldCardProps {
@@ -17,20 +20,23 @@ interface FieldCardProps {
   formatCurrency: (amount: number) => string;
 }
 
-const FieldCard: React.FC<FieldCardProps> = ({ 
-  field, 
-  onView, 
-  onEdit, 
-  formatCurrency 
+const FieldCard: React.FC<FieldCardProps> = ({
+  field,
+  onView,
+  onEdit,
+  formatCurrency,
 }) => {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
       <div className="aspect-video bg-gray-200 relative overflow-hidden">
         {field.images[0] ? (
-          <img 
-            src={field.images[0]} 
+          <Image
+            src={field.images[0]}
             alt={field.name}
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 33vw"
+            priority
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
@@ -38,9 +44,13 @@ const FieldCard: React.FC<FieldCardProps> = ({
           </div>
         )}
         <div className="absolute top-4 right-4">
-          <span className={`px-2 py-1 text-xs rounded-full ${
-            field.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-          }`}>
+          <span
+            className={`px-2 py-1 text-xs rounded-full ${
+              field.isActive
+                ? 'bg-green-100 text-green-800'
+                : 'bg-red-100 text-red-800'
+            }`}
+          >
             {field.isActive ? 'Hoạt động' : 'Tạm dừng'}
           </span>
         </div>
@@ -62,7 +72,9 @@ const FieldCard: React.FC<FieldCardProps> = ({
           </div>
           <div className="flex items-center space-x-2 text-sm text-gray-600">
             <Clock className="w-4 h-4" />
-            <span>{field.openTime} - {field.closeTime}</span>
+            <span>
+              {field.openTime} - {field.closeTime}
+            </span>
           </div>
           <div className="flex items-center space-x-2 text-sm text-gray-600">
             <DollarSign className="w-4 h-4" />

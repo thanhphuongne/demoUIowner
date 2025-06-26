@@ -7,7 +7,7 @@ import { Field } from '../../types';
 
 interface FieldFormProps {
   field?: Field;
-  onSubmit: (fieldData: Omit<Field, 'id' | 'rating' | 'totalBookings'>) => void;
+  onSubmit: (fieldData: Omit<Field, 'id' | 'rating' | 'totalBookings'>) => Promise<void>;
   onCancel: () => void;
 }
 
@@ -15,6 +15,7 @@ const sportTypes = ['Football', 'Tennis', 'Badminton', 'Basketball', 'Volleyball
 const availableAmenities = ['Parking', 'Lighting', 'Changing Room', 'Shower', 'Water', 'Air Conditioning', 'Sound System', 'Equipment Rental', 'Seating'];
 
 const FieldForm: React.FC<FieldFormProps> = ({ field, onSubmit, onCancel }) => {
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [formData, setFormData] = React.useState({
     name: field?.name || '',
     sport: field?.sport || '',
@@ -39,9 +40,19 @@ const FieldForm: React.FC<FieldFormProps> = ({ field, onSubmit, onCancel }) => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    
+    if (isSubmitting) return;
+    
+    setIsSubmitting(true);
+    try {
+      await onSubmit(formData);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -54,6 +65,7 @@ const FieldForm: React.FC<FieldFormProps> = ({ field, onSubmit, onCancel }) => {
           <button
             onClick={onCancel}
             className="p-2 text-gray-400 hover:text-gray-600 rounded-lg"
+            disabled={isSubmitting}
           >
             <X className="w-5 h-5" />
           </button>
@@ -74,6 +86,7 @@ const FieldForm: React.FC<FieldFormProps> = ({ field, onSubmit, onCancel }) => {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Nhập tên sân"
                 required
+                disabled={isSubmitting}
               />
             </div>
 
@@ -86,6 +99,7 @@ const FieldForm: React.FC<FieldFormProps> = ({ field, onSubmit, onCancel }) => {
                 onChange={(e) => setFormData(prev => ({ ...prev, sport: e.target.value }))}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
+                disabled={isSubmitting}
               >
                 <option value="">Chọn loại thể thao</option>
                 {sportTypes.map(sport => (
@@ -106,6 +120,7 @@ const FieldForm: React.FC<FieldFormProps> = ({ field, onSubmit, onCancel }) => {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Mô tả chi tiết về sân"
               required
+              disabled={isSubmitting}
             />
           </div>
 
@@ -121,6 +136,7 @@ const FieldForm: React.FC<FieldFormProps> = ({ field, onSubmit, onCancel }) => {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
                 min="0"
+                disabled={isSubmitting}
               />
             </div>
 
@@ -135,6 +151,7 @@ const FieldForm: React.FC<FieldFormProps> = ({ field, onSubmit, onCancel }) => {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
                 min="0"
+                disabled={isSubmitting}
               />
             </div>
 
@@ -149,6 +166,7 @@ const FieldForm: React.FC<FieldFormProps> = ({ field, onSubmit, onCancel }) => {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
                 min="0"
+                disabled={isSubmitting}
               />
             </div>
           </div>
@@ -164,6 +182,7 @@ const FieldForm: React.FC<FieldFormProps> = ({ field, onSubmit, onCancel }) => {
                 onChange={(e) => setFormData(prev => ({ ...prev, openTime: e.target.value }))}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
+                disabled={isSubmitting}
               />
             </div>
 
@@ -177,6 +196,7 @@ const FieldForm: React.FC<FieldFormProps> = ({ field, onSubmit, onCancel }) => {
                 onChange={(e) => setFormData(prev => ({ ...prev, closeTime: e.target.value }))}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
+                disabled={isSubmitting}
               />
             </div>
 
@@ -191,6 +211,7 @@ const FieldForm: React.FC<FieldFormProps> = ({ field, onSubmit, onCancel }) => {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Địa chỉ sân"
                 required
+                disabled={isSubmitting}
               />
             </div>
           </div>
@@ -207,6 +228,7 @@ const FieldForm: React.FC<FieldFormProps> = ({ field, onSubmit, onCancel }) => {
                     checked={formData.amenities.includes(amenity)}
                     onChange={() => toggleAmenity(amenity)}
                     className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    disabled={isSubmitting}
                   />
                   <span className="text-sm text-gray-700">{amenity}</span>
                 </label>
@@ -218,16 +240,18 @@ const FieldForm: React.FC<FieldFormProps> = ({ field, onSubmit, onCancel }) => {
             <button
               type="button"
               onClick={onCancel}
-              className="px-6 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+              className="px-6 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors disabled:opacity-50"
+              disabled={isSubmitting}
             >
               Hủy
             </button>
             <button
               type="submit"
-              className="flex items-center space-x-2 px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all"
+              className="flex items-center space-x-2 px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isSubmitting}
             >
               <Save className="w-4 h-4" />
-              <span>Lưu</span>
+              <span>{isSubmitting ? 'Đang lưu...' : 'Lưu'}</span>
             </button>
           </div>
         </div>

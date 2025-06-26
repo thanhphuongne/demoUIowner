@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { AuthUser, LoginCredentials } from '../types';
 import { mockUsers } from '../data/mockAuth';
 

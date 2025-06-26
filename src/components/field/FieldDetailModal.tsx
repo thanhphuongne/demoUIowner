@@ -1,8 +1,9 @@
+'use client';
+
 import React from 'react';
+import Image from 'next/image';
 import { Field } from '../../types';
-import { 
-  X,
-} from 'lucide-react';
+import { X } from 'lucide-react';
 
 interface FieldDetailModalProps {
   field: Field;
@@ -10,14 +11,15 @@ interface FieldDetailModalProps {
   formatCurrency: (amount: number) => string;
 }
 
-const FieldDetailModal: React.FC<FieldDetailModalProps> = ({ 
-  field, 
+const FieldDetailModal: React.FC<FieldDetailModalProps> = ({
+  field,
   onClose,
-  formatCurrency
+  formatCurrency,
 }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        {/* Header */}
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold text-gray-900">{field.name}</h2>
@@ -30,15 +32,22 @@ const FieldDetailModal: React.FC<FieldDetailModalProps> = ({
           </div>
         </div>
 
+        {/* Content */}
         <div className="p-6 space-y-6">
           {field.images[0] && (
-            <img 
-              src={field.images[0]} 
-              alt={field.name}
-              className="w-full h-48 object-cover rounded-lg"
-            />
+            <div className="w-full h-48 relative rounded-lg overflow-hidden">
+              <Image
+                src={field.images[0]}
+                alt={field.name}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 600px"
+                priority
+              />
+            </div>
           )}
 
+          {/* Thông tin cơ bản + giờ & giá */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <h4 className="font-medium text-gray-900 mb-2">Thông Tin Cơ Bản</h4>
@@ -60,16 +69,21 @@ const FieldDetailModal: React.FC<FieldDetailModalProps> = ({
             </div>
           </div>
 
+          {/* Mô tả */}
           <div>
             <h4 className="font-medium text-gray-900 mb-2">Mô Tả</h4>
             <p className="text-gray-600 text-sm">{field.description}</p>
           </div>
 
+          {/* Tiện ích */}
           <div>
             <h4 className="font-medium text-gray-900 mb-2">Tiện Ích</h4>
             <div className="flex flex-wrap gap-2">
-              {field.amenities.map(amenity => (
-                <span key={amenity} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+              {field.amenities.map((amenity) => (
+                <span
+                  key={amenity}
+                  className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
+                >
                   {amenity}
                 </span>
               ))}

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { create } from 'zustand';
 import { Field } from '../types';
 import { fieldService } from '../services/fieldService';
@@ -15,6 +16,9 @@ interface FieldStore {
   deleteField: (id: string) => Promise<void>;
   clearError: () => void;
 }
+
+// Biến global để track create requests
+let createInProgress = false;
 
 export const useFieldStore = create<FieldStore>((set, get) => ({
   fields: [],
@@ -51,20 +55,39 @@ export const useFieldStore = create<FieldStore>((set, get) => ({
   },
 
   createField: async (fieldData: Omit<Field, 'id' | 'rating' | 'totalBookings'>) => {
+    // Kiểm tra global flag
+    if (createInProgress) {
+      console.log('Create field request already in progress, skipping...');
+      return;
+    }
+
+    createInProgress = true;
     set({ loading: true, error: null });
     
     try {
       const newField = await fieldService.createField(fieldData);
-      set(state => ({
-        fields: [...state.fields, newField],
-        loading: false
-      }));
+      
+      // Kiểm tra xem field đã tồn tại chưa trước khi thêm
+      const { fields } = get();
+      const existingField = fields.find(f => f.id === newField.id);
+      
+      if (!existingField) {
+        set(state => ({
+          fields: [...state.fields, newField],
+          loading: false
+        }));
+      } else {
+        console.log('Field already exists, skipping add');
+        set({ loading: false });
+      }
     } catch (error) {
       set({ 
         loading: false, 
         error: error instanceof Error ? error.message : 'Lỗi tạo sân mới' 
       });
       throw error;
+    } finally {
+      createInProgress = false;
     }
   },
 
